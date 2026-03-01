@@ -4,13 +4,17 @@ Agent核心模块
 """
 
 import json
+import logging
 import os
+import time
 from datetime import datetime
 
 import requests
 
 import config
 from tools import TOOLS, execute_tool
+
+logger = logging.getLogger(__name__)
 
 
 # ============================================================
@@ -33,11 +37,15 @@ def load_conversation(session_id: str) -> list:
     """
     path = _conversation_path(session_id)
     if not os.path.exists(path):
+        logger.debug("会话 [%s] 无历史记录，创建新会话", session_id)
         return []
     try:
         with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (json.JSONDecodeError, IOError):
+            messages = json.load(f)
+        logger.info("会话 [%s] 加载历史 %d 条消息", session_id, len(messages))
+        return messages
+    except (json.JSONDecodeError, IOError) as e:
+        logger.warning("会话 [%s] 加载失败: %s", session_id, e)
         return []
 
 
@@ -47,6 +55,7 @@ def save_conversation(session_id: str, messages: list) -> None:
     path = _conversation_path(session_id)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(messages, f, ensure_ascii=False, indent=2)
+    logger.info("会话 [%s] 已保存，共 %d 条消息", session_id, len(messages))
 
 
 # ============================================================
@@ -100,13 +109,34 @@ def _call_llm(messages: list, tools: list = None) -> dict:
     if tools:
         payload["tools"] = tools
 
+    logger.info("调用LLM model=%s messages=%d条 tools=%d个", config.LLM_MODEL, len(messages), len(tools) if tools else 0)
+    logger.debug("LLM请求URL: %s", url)
+
+    start_time = time.time()
     resp = requests.post(url, headers=headers, json=payload, timeout=120)
+    elapsed = time.time() - start_time
+
     if resp.status_code != 200:
-        # 将详细错误信息抛出，便于调试
+        logger.error("LLM API错误 status=%d 耗时=%.2fs body=%s", resp.status_code, elapsed, resp.text[:500])
         raise RuntimeError(
             f"LLM API 返回 {resp.status_code}: {resp.text}"
         )
-    return resp.json()
+
+    result = resp.json()
+    # 记录 token 使用量（如果返回中有的话）
+    usage = result.get("usage", {})
+    if usage:
+        logger.info(
+            "LLM响应 耗时=%.2fs prompt_tokens=%s completion_tokens=%s total_tokens=%s",
+            elapsed,
+            usage.get("prompt_tokens", "?"),
+            usage.get("completion_tokens", "?"),
+            usage.get("total_tokens", "?"),
+        )
+    else:
+        logger.info("LLM响应 耗时=%.2fs", elapsed)
+
+    return result
 
 
 # ============================================================
@@ -132,6 +162,8 @@ def chat(session_id: str, user_message: str) -> str:
     Returns:
         Agent 的回复文本
     """
+    logger.info("===== 会话 [%s] 收到用户消息: %s", session_id, user_message[:100])
+
     # 1. 加载历史
     conversation = load_conversation(session_id)
 
@@ -149,7 +181,9 @@ def chat(session_id: str, user_message: str) -> str:
     llm_messages.extend(_stored_to_llm_messages(conversation))
 
     # 4. Agent 循环（工具调用）
-    for _ in range(config.MAX_TOOL_ROUNDS):
+    for round_idx in range(config.MAX_TOOL_ROUNDS):
+        logger.info("会话 [%s] Agent循环 第%d轮", session_id, round_idx + 1)
+
         response = _call_llm(llm_messages, tools=TOOLS)
 
         choice = response["choices"][0]
@@ -158,6 +192,10 @@ def chat(session_id: str, user_message: str) -> str:
         # 4a. 如果没有 tool_calls，说明是最终文本回复
         if not message.get("tool_calls"):
             reply_content = message.get("content", "")
+            logger.info(
+                "会话 [%s] Agent最终回复（共%d轮）: %s",
+                session_id, round_idx + 1, reply_content[:100],
+            )
 
             # 5. 保存 Agent 回复到对话历史
             conversation.append(
@@ -172,6 +210,12 @@ def chat(session_id: str, user_message: str) -> str:
             return reply_content
 
         # 4b. 有 tool_calls，执行工具并回传结果
+        tool_names = [tc["function"]["name"] for tc in message["tool_calls"]]
+        logger.info(
+            "会话 [%s] 第%d轮 LLM请求调用 %d 个工具: %s",
+            session_id, round_idx + 1, len(tool_names), tool_names,
+        )
+
         # 先将 assistant 的 tool_calls 消息追加到 LLM 消息列表
         llm_messages.append(message)
 
@@ -183,6 +227,8 @@ def chat(session_id: str, user_message: str) -> str:
                 func_args = json.loads(tool_call["function"]["arguments"])
             except (json.JSONDecodeError, TypeError):
                 func_args = {}
+
+            logger.info("会话 [%s] 执行工具 %s(%s)", session_id, func_name, func_args)
 
             # 执行工具
             tool_result = execute_tool(func_name, func_args)
@@ -197,6 +243,7 @@ def chat(session_id: str, user_message: str) -> str:
             )
 
     # 达到最大轮次，返回提示
+    logger.warning("会话 [%s] 达到最大工具调用轮次 %d，强制结束", session_id, config.MAX_TOOL_ROUNDS)
     fallback = "抱歉，处理您的请求时工具调用轮次过多，请尝试简化您的问题。"
     conversation.append(
         {

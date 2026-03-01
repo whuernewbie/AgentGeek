@@ -1,0 +1,130 @@
+[2026-03-01 23:38:08] INFO [__main__] 租房Agent服务启动 host=0.0.0.0 port=5000
+[2026-03-01 23:38:08] WARNING [werkzeug]  * Debugger is active!
+[2026-03-01 23:38:08] INFO [werkzeug]  * Debugger PIN: 366-885-201
+[2026-03-01 23:38:31] INFO [__main__] >>> 请求 POST /chat session=log_test message=浣犲ソ
+[2026-03-01 23:38:31] INFO [agent] ===== 会话 [log_test] 收到用户消息: 浣犲ソ
+[2026-03-01 23:38:31] INFO [agent] 会话 [log_test] Agent循环 第1轮
+[2026-03-01 23:38:31] INFO [agent] 调用LLM model=Qwen/Qwen3-8B messages=2条 tools=15个
+[2026-03-01 23:38:36] INFO [agent] LLM响应 耗时=4.38s prompt_tokens=2770 completion_tokens=42 total_tokens=2812
+[2026-03-01 23:38:36] INFO [agent] 会话 [log_test] Agent最终回复（共1轮）: 您好！我是您的北京租房顾问助手，很高兴为您服务。请问您有什么具体的租房需求呢？比如预算、位置、户型、通勤时间等信息，我可以帮您快速找到合适的房源。
+[2026-03-01 23:38:36] INFO [agent] 会话 [log_test] 已保存，共 2 条消息
+[2026-03-01 23:38:36] INFO [__main__] <<< 响应 session=log_test 耗时=4.38s reply=您好！我是您的北京租房顾问助手，很高兴为您服务。请问您有什么具体的租房需求呢？比如预算、位置、户型、通勤时间等信息，我可以帮您快速找到合适的房源。
+[2026-03-01 23:38:36] INFO [werkzeug] 127.0.0.1 - - [01/Mar/2026 23:38:36] "POST /chat HTTP/1.1" 200 -
+[2026-03-01 23:38:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\app.py', reloading
+[2026-03-01 23:38:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\agent.py', reloading
+[2026-03-01 23:38:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\app.py', reloading
+[2026-03-01 23:38:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\agent.py', reloading
+[2026-03-01 23:38:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\agent.py', reloading
+[2026-03-01 23:38:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\config.py', reloading
+[2026-03-01 23:38:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\tools.py', reloading
+[2026-03-01 23:38:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\config.py', reloading
+[2026-03-01 23:38:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\tools.py', reloading
+[2026-03-01 23:38:59] INFO [__main__] 租房Agent服务启动 host=0.0.0.0 port=5000
+[2026-03-01 23:38:59] WARNING [werkzeug]  * Debugger is active!
+[2026-03-01 23:38:59] INFO [werkzeug]  * Debugger PIN: 366-885-201
+[2026-03-01 23:39:53] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\__init__.py', reloading
+[2026-03-01 23:39:54] INFO [__main__] 租房Agent服务启动 host=0.0.0.0 port=5000
+[2026-03-01 23:39:54] WARNING [werkzeug]  * Debugger is active!
+[2026-03-01 23:39:54] INFO [werkzeug]  * Debugger PIN: 366-885-201
+[2026-03-01 23:40:12] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_app.py', reloading
+[2026-03-01 23:40:12] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_app.py', reloading
+[2026-03-01 23:40:12] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_app.py', reloading
+[2026-03-01 23:40:12] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_app.py', reloading
+[2026-03-01 23:40:13] INFO [__main__] 租房Agent服务启动 host=0.0.0.0 port=5000
+[2026-03-01 23:40:13] WARNING [werkzeug]  * Debugger is active!
+[2026-03-01 23:40:13] INFO [werkzeug]  * Debugger PIN: 366-885-201
+[2026-03-01 23:41:01] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_agent.py', reloading
+[2026-03-01 23:41:01] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_agent.py', reloading
+[2026-03-01 23:41:01] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_agent.py', reloading
+[2026-03-01 23:41:01] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_agent.py', reloading
+[2026-03-01 23:41:02] INFO [__main__] 租房Agent服务启动 host=0.0.0.0 port=5000
+[2026-03-01 23:41:02] WARNING [werkzeug]  * Debugger is active!
+[2026-03-01 23:41:02] INFO [werkzeug]  * Debugger PIN: 366-885-201
+[2026-03-01 23:41:45] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_tools.py', reloading
+[2026-03-01 23:41:46] INFO [__main__] 租房Agent服务启动 host=0.0.0.0 port=5000
+[2026-03-01 23:41:46] WARNING [werkzeug]  * Debugger is active!
+[2026-03-01 23:41:46] INFO [werkzeug]  * Debugger PIN: 366-885-201
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\__init__.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\_core\\_eventloop.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\_core\\_exceptions.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\_core\\_fileio.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\to_thread.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\abc\\__init__.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\abc\\_eventloop.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\abc\\_resources.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\abc\\_sockets.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\_core\\_typedattr.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\abc\\_streams.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\abc\\_tasks.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\abc\\_subprocesses.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\abc\\_testing.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\_core\\_synchronization.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\anyio\\lowlevel.py', reloading
+[2026-03-01 23:41:57] INFO [__main__] 租房Agent服务启动 host=0.0.0.0 port=5000
+[2026-03-01 23:41:57] WARNING [werkzeug]  * Debugger is active!
+[2026-03-01 23:41:57] INFO [werkzeug]  * Debugger PIN: 366-885-201
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\schemas.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\testing\\__init__.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\testing\\_internal.py', reloading
+[2026-03-01 23:41:57] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\client.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\env\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\env\\_git.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\env\\_runtime_env.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\_internal\\_orjson.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\_internal\\_background_thread.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\_internal\\_compressed_traces.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\_internal\\_constants.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\_internal\\_operations.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\_internal\\_multipart.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\_internal\\_serde.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\_internal\\_beta_decorator.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\_internal\\_uuid.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\run_helpers.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\_internal\\_context.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\run_trees.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\uuid.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\langsmith\\_internal\\_aiter.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\pytest_asyncio\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\pytest_asyncio\\_version.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\pytest_asyncio\\plugin.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\address\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\address\\en\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\automotive\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\bank\\en_GB\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\barcode\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\color\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\company\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\credit_card\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\currency\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\date_time\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\geo\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\internet\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\isbn\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\job\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\misc\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\passport\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\person\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\phone_number\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\site-packages\\faker\\providers\\ssn\\en_US\\__init__.py', reloading
+[2026-03-01 23:41:58] INFO [werkzeug]  * Detected change in 'D:\\anaconda3\\Lib\\unittest\\mock.py', reloading
+[2026-03-01 23:41:59] INFO [__main__] 租房Agent服务启动 host=0.0.0.0 port=5000
+[2026-03-01 23:41:59] WARNING [werkzeug]  * Debugger is active!
+[2026-03-01 23:41:59] INFO [werkzeug]  * Debugger PIN: 366-885-201
+[2026-03-01 23:42:18] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_tools.py', reloading
+[2026-03-01 23:42:18] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_tools.py', reloading
+[2026-03-01 23:42:18] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_app.py', reloading
+[2026-03-01 23:42:18] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_agent.py', reloading
+[2026-03-01 23:42:18] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_app.py', reloading
+[2026-03-01 23:42:18] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_tools.py', reloading
+[2026-03-01 23:42:18] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\test\\test_agent.py', reloading
+[2026-03-01 23:42:19] INFO [__main__] 租房Agent服务启动 host=0.0.0.0 port=5000
+[2026-03-01 23:42:19] WARNING [werkzeug]  * Debugger is active!
+[2026-03-01 23:42:19] INFO [werkzeug]  * Debugger PIN: 366-885-201
+[2026-03-01 23:44:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\config.py', reloading
+[2026-03-01 23:44:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\agent.py', reloading
+[2026-03-01 23:44:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\config.py', reloading
+[2026-03-01 23:44:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\config.py', reloading
+[2026-03-01 23:44:58] INFO [werkzeug]  * Detected change in 'D:\\gitRepos\\AgentGeek\\agent.py', reloading
+[2026-03-01 23:45:00] INFO [__main__] 租房Agent服务启动 host=0.0.0.0 port=5000
+[2026-03-01 23:45:00] WARNING [werkzeug]  * Debugger is active!
+[2026-03-01 23:45:00] INFO [werkzeug]  * Debugger PIN: 366-885-201

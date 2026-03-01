@@ -3,6 +3,7 @@
 通过环境变量或默认值进行配置
 """
 
+import logging
 import os
 
 # ======================== LLM 配置 ========================
@@ -25,6 +26,43 @@ CONVERSATIONS_DIR = os.environ.get(
     "CONVERSATIONS_DIR",
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "conversations"),
 )
+
+# ======================== 日志配置 ========================
+# 日志目录
+LOG_DIR = os.environ.get(
+    "LOG_DIR",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs"),
+)
+# 日志级别: DEBUG / INFO / WARNING / ERROR
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
+
+
+def setup_logging():
+    """
+    初始化日志配置：同时输出到控制台和文件 logs/agent.log。
+    应在应用启动时调用一次。
+    """
+    os.makedirs(LOG_DIR, exist_ok=True)
+    log_file = os.path.join(LOG_DIR, "agent.log")
+
+    fmt = "[%(asctime)s] %(levelname)s [%(name)s] %(message)s"
+    datefmt = "%Y-%m-%d %H:%M:%S"
+
+    root_logger = logging.getLogger()
+    root_logger.setLevel(getattr(logging, LOG_LEVEL, logging.INFO))
+
+    # 避免重复添加 handler（Flask debug 模式会重载）
+    if not root_logger.handlers:
+        # 控制台 handler
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(logging.Formatter(fmt, datefmt=datefmt))
+        root_logger.addHandler(console_handler)
+
+        # 文件 handler（UTF-8 编码，追加模式）
+        file_handler = logging.FileHandler(log_file, encoding="utf-8")
+        file_handler.setFormatter(logging.Formatter(fmt, datefmt=datefmt))
+        root_logger.addHandler(file_handler)
+
 
 # ======================== Agent 配置 ========================
 # 最大工具调用轮次（防止死循环）

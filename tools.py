@@ -5,8 +5,14 @@
 """
 
 import json
+import logging
+import time
+
 import requests
+
 import config
+
+logger = logging.getLogger(__name__)
 
 # ============================================================
 # OpenAI function calling 格式的工具定义
@@ -466,6 +472,7 @@ def execute_tool(tool_name: str, arguments: dict) -> str:
     """
     route = _TOOL_ROUTES.get(tool_name)
     if route is None:
+        logger.warning("未知工具调用: %s", tool_name)
         return json.dumps({"error": f"未知工具: {tool_name}"}, ensure_ascii=False)
 
     method, url_template, path_params, needs_user_id = route
@@ -487,12 +494,20 @@ def execute_tool(tool_name: str, arguments: dict) -> str:
     if needs_user_id:
         headers["X-User-ID"] = config.HOUSING_USER_ID
 
+    logger.info("工具调用 [%s] %s %s params=%s", tool_name, method, url, query_params)
+
     # 发送请求
+    start_time = time.time()
     try:
         if method == "GET":
             resp = requests.get(url, params=query_params, headers=headers, timeout=30)
         else:  # POST
             resp = requests.post(url, params=query_params, headers=headers, timeout=30)
+
+        elapsed = time.time() - start_time
+        logger.info(
+            "工具响应 [%s] status=%d 耗时=%.2fs", tool_name, resp.status_code, elapsed
+        )
 
         # 尝试解析 JSON 响应
         try:
@@ -500,9 +515,13 @@ def execute_tool(tool_name: str, arguments: dict) -> str:
         except ValueError:
             result = {"status_code": resp.status_code, "body": resp.text}
 
-        return json.dumps(result, ensure_ascii=False)
+        result_str = json.dumps(result, ensure_ascii=False)
+        logger.debug("工具结果 [%s] %s", tool_name, result_str[:500])
+        return result_str
 
     except requests.RequestException as e:
+        elapsed = time.time() - start_time
+        logger.error("工具调用失败 [%s] 耗时=%.2fs 错误: %s", tool_name, elapsed, e)
         return json.dumps(
             {"error": f"请求失败: {str(e)}"}, ensure_ascii=False
         )
