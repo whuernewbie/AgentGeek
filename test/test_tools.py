@@ -129,9 +129,11 @@ class TestExecuteTool(unittest.TestCase):
     """execute_tool 执行逻辑测试"""
 
     def test_unknown_tool_returns_error(self):
-        """调用未知工具应返回错误 JSON"""
+        """调用未知工具应返回 success=False 的字典"""
         result = execute_tool("nonexistent_tool", {})
-        data = json.loads(result)
+        self.assertIsInstance(result, dict)
+        self.assertFalse(result["success"])
+        data = json.loads(result["output"])
         self.assertIn("error", data)
         self.assertIn("未知工具", data["error"])
 
@@ -207,18 +209,20 @@ class TestExecuteTool(unittest.TestCase):
 
     @patch("tools.requests.get")
     def test_request_exception_returns_error(self, mock_get):
-        """网络异常时应返回错误 JSON 而不是抛异常"""
+        """网络异常时应返回 success=False 而不是抛异常"""
         import requests as req_lib
         mock_get.side_effect = req_lib.ConnectionError("连接被拒绝")
 
         result = execute_tool("get_landmarks", {})
-        data = json.loads(result)
+        self.assertIsInstance(result, dict)
+        self.assertFalse(result["success"])
+        data = json.loads(result["output"])
         self.assertIn("error", data)
         self.assertIn("请求失败", data["error"])
 
     @patch("tools.requests.get")
     def test_non_json_response_handled(self, mock_get):
-        """API 返回非 JSON 时应优雅处理"""
+        """API 返回非 JSON 时应优雅处理且 success=False"""
         mock_resp = MagicMock()
         mock_resp.json.side_effect = ValueError("No JSON")
         mock_resp.status_code = 502
@@ -226,7 +230,9 @@ class TestExecuteTool(unittest.TestCase):
         mock_get.return_value = mock_resp
 
         result = execute_tool("get_landmarks", {})
-        data = json.loads(result)
+        self.assertIsInstance(result, dict)
+        self.assertFalse(result["success"])
+        data = json.loads(result["output"])
         self.assertEqual(data["status_code"], 502)
         self.assertEqual(data["body"], "Bad Gateway")
 

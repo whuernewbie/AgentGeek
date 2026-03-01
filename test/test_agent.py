@@ -157,7 +157,7 @@ class TestChatLoop(unittest.TestCase):
 
     @patch("agent._call_llm")
     def test_simple_text_reply(self, mock_llm):
-        """LLM 直接返回文本时应正确返回"""
+        """LLM 直接返回文本时应正确返回 dict"""
         mock_llm.return_value = {
             "choices": [
                 {
@@ -168,8 +168,12 @@ class TestChatLoop(unittest.TestCase):
                 }
             ]
         }
-        reply = agent.chat("test_simple", "你好")
-        self.assertEqual(reply, "您好，请问有什么需要？")
+        result = agent.chat("test_simple", "你好")
+        self.assertIsInstance(result, dict)
+        self.assertEqual(result["response"], "您好，请问有什么需要？")
+        self.assertEqual(result["status"], "success")
+        self.assertIsInstance(result["tool_results"], list)
+        self.assertEqual(len(result["tool_results"]), 0)
         mock_llm.assert_called_once()
 
     @patch("agent._call_llm")
@@ -178,7 +182,8 @@ class TestChatLoop(unittest.TestCase):
         mock_llm.return_value = {
             "choices": [{"message": {"role": "assistant", "content": "ok"}}]
         }
-        agent.chat("test_save", "hello")
+        result = agent.chat("test_save", "hello")
+        self.assertEqual(result["response"], "ok")
         loaded = agent.load_conversation("test_save")
         self.assertEqual(len(loaded), 2)  # user + agent
         self.assertEqual(loaded[0]["role"], "user")
@@ -223,10 +228,20 @@ class TestChatLoop(unittest.TestCase):
                 ]
             },
         ]
-        mock_tool.return_value = '{"data": [{"id": "HF_001", "price": 4500}]}'
+        mock_tool.return_value = {
+            "success": True,
+            "output": '{"data": [{"id": "HF_001", "price": 4500}]}',
+        }
 
-        reply = agent.chat("test_tool", "海淀5000以内")
-        self.assertEqual(reply, "为您找到以下房源...")
+        result = agent.chat("test_tool", "海淀5000以内")
+        self.assertEqual(result["response"], "为您找到以下房源...")
+        self.assertEqual(result["status"], "success")
+        # 应包含一个工具调用结果，格式为 {name, success, output}
+        self.assertEqual(len(result["tool_results"]), 1)
+        tr = result["tool_results"][0]
+        self.assertEqual(tr["name"], "get_houses_by_platform")
+        self.assertTrue(tr["success"])
+        self.assertEqual(tr["output"], '{"data": [{"id": "HF_001", "price": 4500}]}')
         self.assertEqual(mock_llm.call_count, 2)
         mock_tool.assert_called_once_with(
             "get_houses_by_platform", {"district": "海淀", "max_price": 5000}
@@ -258,11 +273,19 @@ class TestChatLoop(unittest.TestCase):
         original_max = config.MAX_TOOL_ROUNDS
         config.MAX_TOOL_ROUNDS = 2  # 限制为2轮方便测试
 
-        with patch("agent.execute_tool", return_value='{"data": []}'):
-            reply = agent.chat("test_max_round", "测试")
+        with patch("agent.execute_tool", return_value={"success": True, "output": '{"data": []}'}):
+            result = agent.chat("test_max_round", "测试")
 
         config.MAX_TOOL_ROUNDS = original_max
-        self.assertIn("轮次过多", reply)
+        self.assertIn("轮次过多", result["response"])
+        self.assertEqual(result["status"], "max_rounds_exceeded")
+        # 每轮一个工具调用，共 2 轮
+        self.assertEqual(len(result["tool_results"]), 2)
+        # 每个 tool_result 应包含 name, success, output
+        for tr in result["tool_results"]:
+            self.assertIn("name", tr)
+            self.assertIn("success", tr)
+            self.assertIn("output", tr)
 
     @patch("agent._call_llm")
     def test_context_continuity(self, mock_llm):
@@ -270,12 +293,14 @@ class TestChatLoop(unittest.TestCase):
         mock_llm.return_value = {
             "choices": [{"message": {"role": "assistant", "content": "reply1"}}]
         }
-        agent.chat("test_ctx", "msg1")
+        result1 = agent.chat("test_ctx", "msg1")
+        self.assertEqual(result1["response"], "reply1")
 
         mock_llm.return_value = {
             "choices": [{"message": {"role": "assistant", "content": "reply2"}}]
         }
-        agent.chat("test_ctx", "msg2")
+        result2 = agent.chat("test_ctx", "msg2")
+        self.assertEqual(result2["response"], "reply2")
 
         # 检查第二次调用 LLM 时，messages 应包含历史
         second_call_messages = mock_llm.call_args_list[1][0][0]

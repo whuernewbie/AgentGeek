@@ -34,7 +34,11 @@ def chat_endpoint():
     响应体 (JSON):
         {
             "session_id": "abc123",
-            "reply": "好的，我来帮您查找..."
+            "response": "好的，我来帮您查找...",
+            "status": "success",
+            "tool_results": [...],
+            "timestamp": 1709251200,
+            "duration_ms": 1234
         }
 
     curl 调试示例:
@@ -61,20 +65,42 @@ def chat_endpoint():
     logger.info(">>> 请求 POST /chat session=%s message=%s", session_id, message[:80])
 
     try:
-        reply = chat(session_id, message)
+        result = chat(session_id, message)
         elapsed = time.time() - start_time
+        duration_ms = int(elapsed * 1000)
+
+        response_body = {
+            "session_id": session_id,
+            "response": result["response"],
+            "status": result["status"],
+            "tool_results": result["tool_results"],
+            "timestamp": int(time.time()),
+            "duration_ms": duration_ms,
+        }
+
         logger.info(
-            "<<< 响应 session=%s 耗时=%.2fs reply=%s",
-            session_id, elapsed, reply[:80],
+            "<<< 响应 session=%s status=%s 耗时=%dms tools=%d response=%s",
+            session_id, result["status"], duration_ms,
+            len(result["tool_results"]),
+            result["response"][:80],
         )
-        return jsonify({"session_id": session_id, "reply": reply})
+        return jsonify(response_body)
     except Exception as e:
         elapsed = time.time() - start_time
+        duration_ms = int(elapsed * 1000)
         logger.error(
-            "!!! 异常 session=%s 耗时=%.2fs error=%s", session_id, elapsed, e,
+            "!!! 异常 session=%s 耗时=%dms error=%s", session_id, duration_ms, e,
             exc_info=True,
         )
-        return jsonify({"error": f"处理失败: {str(e)}"}), 500
+        return jsonify({
+            "session_id": session_id,
+            "response": "",
+            "status": "error",
+            "tool_results": [],
+            "timestamp": int(time.time()),
+            "duration_ms": duration_ms,
+            "error": f"处理失败: {str(e)}",
+        }), 500
 
 
 if __name__ == "__main__":

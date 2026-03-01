@@ -144,9 +144,9 @@ def _call_llm(messages: list, tools: list = None) -> dict:
 # ============================================================
 
 
-def chat(session_id: str, user_message: str) -> str:
+def chat(session_id: str, user_message: str) -> dict:
     """
-    处理一次用户消息，返回 Agent 的回复。
+    处理一次用户消息，返回包含 Agent 回复及工具调用详情的字典。
 
     流程:
     1. 加载历史对话
@@ -160,9 +160,16 @@ def chat(session_id: str, user_message: str) -> str:
         user_message: 用户消息文本
 
     Returns:
-        Agent 的回复文本
+        dict: {
+            "response": str,          # Agent 的回复文本
+            "status": str,            # 处理状态: "success" / "max_rounds_exceeded"
+            "tool_results": list,     # 工具调用结果列表
+        }
     """
     logger.info("===== 会话 [%s] 收到用户消息: %s", session_id, user_message[:100])
+
+    # 收集所有工具调用结果
+    all_tool_results = []
 
     # 1. 加载历史
     conversation = load_conversation(session_id)
@@ -207,7 +214,11 @@ def chat(session_id: str, user_message: str) -> str:
             )
             save_conversation(session_id, conversation)
 
-            return reply_content
+            return {
+                "response": reply_content,
+                "status": "success",
+                "tool_results": all_tool_results,
+            }
 
         # 4b. 有 tool_calls，执行工具并回传结果
         tool_names = [tc["function"]["name"] for tc in message["tool_calls"]]
@@ -230,15 +241,22 @@ def chat(session_id: str, user_message: str) -> str:
 
             logger.info("会话 [%s] 执行工具 %s(%s)", session_id, func_name, func_args)
 
-            # 执行工具
+            # 执行工具（返回 {"success": bool, "output": str}）
             tool_result = execute_tool(func_name, func_args)
 
-            # 将工具结果追加到 LLM 消息
+            # 收集工具调用结果（name / success / output）
+            all_tool_results.append({
+                "name": func_name,
+                "success": tool_result["success"],
+                "output": tool_result["output"],
+            })
+
+            # 将工具输出追加到 LLM 消息
             llm_messages.append(
                 {
                     "role": "tool",
                     "tool_call_id": tool_call["id"],
-                    "content": tool_result,
+                    "content": tool_result["output"],
                 }
             )
 
@@ -253,4 +271,8 @@ def chat(session_id: str, user_message: str) -> str:
         }
     )
     save_conversation(session_id, conversation)
-    return fallback
+    return {
+        "response": fallback,
+        "status": "max_rounds_exceeded",
+        "tool_results": all_tool_results,
+    }

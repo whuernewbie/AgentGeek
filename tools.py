@@ -459,21 +459,25 @@ _TOOL_ROUTES = {
 }
 
 
-def execute_tool(tool_name: str, arguments: dict) -> str:
+def execute_tool(tool_name: str, arguments: dict) -> dict:
     """
-    执行指定工具调用，返回结果的 JSON 字符串。
+    执行指定工具调用，返回包含成功标志和输出内容的字典。
 
     Args:
         tool_name: 工具名称（对应 operationId）
         arguments: 工具参数字典
 
     Returns:
-        API 响应的 JSON 字符串，或错误信息
+        dict: {
+            "success": bool,   # 调用是否成功
+            "output": str,     # 工具调用的输出内容（JSON 字符串）
+        }
     """
     route = _TOOL_ROUTES.get(tool_name)
     if route is None:
         logger.warning("未知工具调用: %s", tool_name)
-        return json.dumps({"error": f"未知工具: {tool_name}"}, ensure_ascii=False)
+        output = json.dumps({"error": f"未知工具: {tool_name}"}, ensure_ascii=False)
+        return {"success": False, "output": output}
 
     method, url_template, path_params, needs_user_id = route
 
@@ -517,11 +521,12 @@ def execute_tool(tool_name: str, arguments: dict) -> str:
 
         result_str = json.dumps(result, ensure_ascii=False)
         logger.debug("工具结果 [%s] %s", tool_name, result_str[:500])
-        return result_str
+
+        success = 200 <= resp.status_code < 300
+        return {"success": success, "output": result_str}
 
     except requests.RequestException as e:
         elapsed = time.time() - start_time
         logger.error("工具调用失败 [%s] 耗时=%.2fs 错误: %s", tool_name, elapsed, e)
-        return json.dumps(
-            {"error": f"请求失败: {str(e)}"}, ensure_ascii=False
-        )
+        output = json.dumps({"error": f"请求失败: {str(e)}"}, ensure_ascii=False)
+        return {"success": False, "output": output}
