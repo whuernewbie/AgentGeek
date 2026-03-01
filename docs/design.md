@@ -9,7 +9,7 @@
 ```
 ┌──────────────────────────────────────────────────┐
 │                   客户端 (curl)                    │
-│              POST /chat {session_id, message}     │
+│              POST /api/v2/chat {session_id, message}     │
 └──────────────────────┬───────────────────────────┘
                        │
 ┌──────────────────────▼───────────────────────────┐
@@ -51,7 +51,7 @@
 一次完整的用户请求经历以下流程：
 
 ```
-用户发送 POST /chat
+用户发送 POST /api/v2/chat
     │
     ▼
 app.py: 参数校验 → 提取 session_id 和 message
@@ -248,7 +248,7 @@ app.py    (入口)
 
 **职责**：Flask 路由、参数校验、异常处理。
 
-**端点 `POST /chat`**：
+**端点 `POST /api/v2/chat`**：
 
 - 请求体：`{"session_id": "可选", "message": "必填"}`
 - 成功响应体 (200)：
@@ -359,7 +359,7 @@ AgentGeek/
 **日志示例**（一次完整请求）：
 
 ```
-[23:38:31] INFO [__main__]  >>> 请求 POST /chat session=test1 message=帮我找西二旗...
+[23:38:31] INFO [__main__]  >>> 请求 POST /api/v2/chat session=test1 message=帮我找西二旗...
 [23:38:31] INFO [agent]     ===== 会话 [test1] 收到用户消息: 帮我找西二旗...
 [23:38:31] INFO [agent]     会话 [test1] Agent循环 第1轮
 [23:38:31] INFO [agent]     调用LLM model=Qwen/Qwen3-8B messages=2条 tools=15个

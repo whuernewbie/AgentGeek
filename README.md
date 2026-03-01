@@ -45,7 +45,7 @@ python app.py
 ### 4. 调试
 
 ```bash
-curl -X POST http://localhost:5000/chat ^
+curl -X POST http://localhost:5000/api/v2/chat ^
   -H "Content-Type: application/json" ^
   -d "{\"session_id\":\"test1\",\"message\":\"帮我找西二旗附近3000以下的一居室\"}"
 ```
@@ -79,7 +79,7 @@ python -m pytest test/ -v
 
 ```
 AgentGeek/
-├── app.py                   # HTTP 服务入口（Flask，POST /chat）
+├── app.py                   # HTTP 服务入口（Flask，POST /api/v2/chat）
 ├── agent.py                 # Agent 核心（对话管理、LLM 调用、工具调用循环）
 ├── tools.py                 # 工具定义（OpenAI function 格式）+ 工具执行引擎
 ├── config.py                # 配置管理 + 日志初始化

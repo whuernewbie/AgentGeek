@@ -20,7 +20,7 @@ from app import app
 
 
 class TestChatEndpoint(unittest.TestCase):
-    """POST /chat 接口测试"""
+    """POST /api/v2/chat 接口测试"""
 
     def setUp(self):
         """每个测试前创建 Flask 测试客户端"""
@@ -34,7 +34,7 @@ class TestChatEndpoint(unittest.TestCase):
     def test_non_json_body_returns_400(self):
         """请求体不是 JSON 时应返回 400"""
         resp = self.client.post(
-            "/chat",
+            "/api/v2/chat",
             data="not json",
             content_type="text/plain",
         )
@@ -46,7 +46,7 @@ class TestChatEndpoint(unittest.TestCase):
     def test_empty_message_returns_400(self):
         """message 为空时应返回 400"""
         resp = self.client.post(
-            "/chat",
+            "/api/v2/chat",
             json={"session_id": "test", "message": ""},
         )
         self.assertEqual(resp.status_code, 400)
@@ -56,7 +56,7 @@ class TestChatEndpoint(unittest.TestCase):
     def test_missing_message_returns_400(self):
         """没有 message 字段时应返回 400"""
         resp = self.client.post(
-            "/chat",
+            "/api/v2/chat",
             json={"session_id": "test"},
         )
         self.assertEqual(resp.status_code, 400)
@@ -64,7 +64,7 @@ class TestChatEndpoint(unittest.TestCase):
     def test_whitespace_only_message_returns_400(self):
         """message 仅含空格时应返回 400"""
         resp = self.client.post(
-            "/chat",
+            "/api/v2/chat",
             json={"session_id": "test", "message": "   "},
         )
         self.assertEqual(resp.status_code, 400)
@@ -82,7 +82,7 @@ class TestChatEndpoint(unittest.TestCase):
             "tool_results": [],
         }
         resp = self.client.post(
-            "/chat",
+            "/api/v2/chat",
             json={"session_id": "s1", "message": "你好"},
         )
         self.assertEqual(resp.status_code, 200)
@@ -102,7 +102,7 @@ class TestChatEndpoint(unittest.TestCase):
             "tool_results": [],
         }
         resp = self.client.post(
-            "/chat",
+            "/api/v2/chat",
             json={"message": "hi"},
         )
         self.assertEqual(resp.status_code, 200)
@@ -119,7 +119,7 @@ class TestChatEndpoint(unittest.TestCase):
             "tool_results": [],
         }
         resp = self.client.post(
-            "/chat",
+            "/api/v2/chat",
             json={"session_id": "abc", "message": "测试"},
         )
         data = resp.get_json()
@@ -140,7 +140,7 @@ class TestChatEndpoint(unittest.TestCase):
             "tool_results": [],
         }
         resp = self.client.post(
-            "/chat",
+            "/api/v2/chat",
             json={"session_id": "ts_test", "message": "时间"},
         )
         data = resp.get_json()
@@ -157,7 +157,7 @@ class TestChatEndpoint(unittest.TestCase):
             "tool_results": [],
         }
         resp = self.client.post(
-            "/chat",
+            "/api/v2/chat",
             json={"session_id": "dur_test", "message": "耗时"},
         )
         data = resp.get_json()
@@ -179,7 +179,7 @@ class TestChatEndpoint(unittest.TestCase):
             ],
         }
         resp = self.client.post(
-            "/chat",
+            "/api/v2/chat",
             json={"session_id": "tool_test", "message": "找房"},
         )
         data = resp.get_json()
@@ -198,7 +198,7 @@ class TestChatEndpoint(unittest.TestCase):
         """agent.chat 抛异常时应返回 500 且响应体包含所有字段"""
         mock_chat.side_effect = RuntimeError("LLM 连接失败")
         resp = self.client.post(
-            "/chat",
+            "/api/v2/chat",
             json={"session_id": "s2", "message": "你好"},
         )
         self.assertEqual(resp.status_code, 500)

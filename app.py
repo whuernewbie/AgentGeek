@@ -1,6 +1,6 @@
 """
 租房Agent HTTP 服务入口
-提供 POST /chat 接口，通过 curl 调试。
+提供 POST /api/v2/chat 接口，通过 curl 调试。
 """
 
 import logging
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 
-@app.route("/chat", methods=["POST"])
+@app.route("/api/v2/chat", methods=["POST"])
 def chat_endpoint():
     """
     问答接口
@@ -42,7 +42,7 @@ def chat_endpoint():
         }
 
     curl 调试示例:
-        curl -X POST http://localhost:5000/chat \
+        curl -X POST http://localhost:5000/api/v2/chat \
             -H "Content-Type: application/json" \
             -d "{\"session_id\":\"test1\",\"message\":\"帮我找西二旗附近3000以下的一居室\"}"
     """
@@ -62,7 +62,7 @@ def chat_endpoint():
     if not session_id:
         session_id = uuid.uuid4().hex
 
-    logger.info(">>> 请求 POST /chat session=%s message=%s", session_id, message[:80])
+    logger.info(">>> 请求 POST /api/v2/chat session=%s message=%s", session_id, message[:80])
 
     try:
         result = chat(session_id, message)
