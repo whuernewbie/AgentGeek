@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 # OpenAI function calling 格式的工具定义
 # ============================================================
 
-TOOLS = [
+ALL_TOOLS = [
     # -------------------- 地标类接口 --------------------
     {
         "type": "function",
@@ -163,14 +163,6 @@ TOOLS = [
                         "type": "string",
                         "enum": ["链家", "安居客", "58同城"],
                         "description": "挂牌平台，不传则默认安居客",
-                    },
-                    "page": {
-                        "type": "integer",
-                        "description": "页码，默认 1",
-                    },
-                    "page_size": {
-                        "type": "integer",
-                        "description": "每页条数，默认 10，最大 10000",
                     },
                 },
                 "required": ["community"],
@@ -422,6 +414,9 @@ TOOLS = [
         },
     },
 ]
+TOOLS_START = [ALL_TOOLS[1], ALL_TOOLS[5], ALL_TOOLS[6], ALL_TOOLS[7], ALL_TOOLS[8], ALL_TOOLS[12], ALL_TOOLS[13]]
+
+TOOLS_FOLLOW = [ALL_TOOLS[2], ALL_TOOLS[8], ALL_TOOLS[10], ALL_TOOLS[12]]
 
 # ============================================================
 # 工具路由表：工具名 -> (HTTP方法, URL模板, path参数列表, 是否需要X-User-ID)
@@ -516,17 +511,61 @@ def execute_tool(tool_name: str, arguments: dict) -> dict:
         # 尝试解析 JSON 响应
         try:
             result = resp.json()
+            if "data" in result and "items" in result["data"] and isinstance(result["data"]["items"], list):
+                result["data"]["items"] = result["data"]["items"][:5]
         except ValueError:
             result = {"status_code": resp.status_code, "body": resp.text}
 
+        houses = extract_house_ids(result)
+        logger.info("工具house_id [%s] %s", tool_name, houses)
         result_str = json.dumps(result, ensure_ascii=False)
-        logger.debug("工具结果 [%s] %s", tool_name, result_str[:500])
+        logger.info("工具结果 [%s] %s", tool_name, result_str)
 
         success = 200 <= resp.status_code < 300
-        return {"success": success, "output": result_str}
+        return {"success": success, "output": result_str, "houses": houses}
 
     except requests.RequestException as e:
         elapsed = time.time() - start_time
         logger.error("工具调用失败 [%s] 耗时=%.2fs 错误: %s", tool_name, elapsed, e)
         output = json.dumps({"error": f"请求失败: {str(e)}"}, ensure_ascii=False)
-        return {"success": False, "output": output}
+        return {"success": False, "output": output, "houses": []}
+
+
+def extract_house_ids(json_data):
+    """
+    从JSON对象中提取house_id数组
+
+    Args:
+        json_data (dict): 包含house信息的JSON对象，格式为：
+                         {"code": 0, "message": "success", "data": {"items": [...]}}
+
+    Returns:
+        list: 包含所有house_id的数组，例如["HF_3"]
+    """
+    house_ids = []
+    seen_ids = set()
+
+    # 检查输入是否为字典
+    if not isinstance(json_data, dict):
+        return house_ids
+
+    # 检查data字段是否存在
+    if 'data' not in json_data or not isinstance(json_data['data'], dict):
+        return house_ids
+
+    if 'house_id' in json_data['data']:
+        return [json_data['data']['house_id']]
+
+    # 检查items字段是否存在
+    if 'items' not in json_data['data']:
+        return house_ids
+
+    # 遍历items列表并提取不重复的house_id
+    for item in json_data['data']['items']:
+        if isinstance(item, dict) and 'house_id' in item:
+            house_id = item['house_id']
+            if house_id not in seen_ids:
+                house_ids.append(house_id)
+                seen_ids.add(house_id)
+
+    return house_ids
