@@ -85,7 +85,7 @@ def _now_timestamp() -> str:
 # ============================================================
 
 
-def _call_llm(messages: list, tools: list = None, model_ip: str = None) -> dict:
+def _call_llm(messages: list, tools: list = None, model_ip: str = None, session_id: str = "") -> dict:
     """
     调用 OpenAI 兼容的 Chat Completion API。
 
@@ -102,8 +102,8 @@ def _call_llm(messages: list, tools: list = None, model_ip: str = None) -> dict:
     """
     if model_ip:
         # 自部署模型：直接用 model_ip 构造 URL，无需 API Key 和模型名
-        url = model_ip
-        headers = {"Content-Type": "application/json"}
+        url = "http://" + model_ip + ":8888/v2/chat/completions"
+        headers = {"Content-Type": "application/json", "Session-ID": session_id}
         payload = {"model": config.LLM_MODEL, "messages": messages}
         model_label = f"self-hosted@{model_ip}"
     else:
@@ -202,7 +202,7 @@ def chat(session_id: str, user_message: str, model_ip: str = None) -> dict:
     for round_idx in range(config.MAX_TOOL_ROUNDS):
         logger.info("会话 [%s] Agent循环 第%d轮", session_id, round_idx + 1)
 
-        response = _call_llm(llm_messages, tools=TOOLS, model_ip=model_ip)
+        response = _call_llm(llm_messages, tools=ALL_TOOLS, model_ip=model_ip, session_id=session_id)
 
         choice = response["choices"][0]
         message = choice["message"]
