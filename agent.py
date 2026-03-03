@@ -12,7 +12,7 @@ from datetime import datetime
 import requests
 
 import config
-from tools import TOOLS, execute_tool
+from tools import ALL_TOOLS, execute_tool
 
 logger = logging.getLogger(__name__)
 
