@@ -44,7 +44,7 @@ def _handle_chat(endpoint_name: str, model_ip: str = None):
     if not session_id:
         session_id = uuid.uuid4().hex
 
-    logger.info(">>> 请求 POST %s session=%s message=%s", endpoint_name, session_id, message[:80])
+    logger.info(">>> 请求 POST %s session=%s message=%s model_ip=%s", endpoint_name, session_id, message[:80], model_ip)
 
     try:
         result = chat(session_id, message, model_ip=model_ip)
@@ -103,6 +103,8 @@ def chat_v1_endpoint():
             -d "{\"session_id\":\"test1\",\"model_ip\":\"192.168.1.100:8000\",\"message\":\"帮我找西二旗附近3000以下的一居室\"}"
     """
     data = request.get_json(silent=True)
+    logger.info("=================== request start ===================", data)
+    logger.info("request json data:%s", data)
     if not data:
         return jsonify({"error": "请求体必须为 JSON 格式"}), 400
 
@@ -133,5 +135,6 @@ def chat_v2_endpoint():
 
 
 if __name__ == "__main__":
-    logger.info("租房Agent服务启动 host=0.0.0.0 port=5000")
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    logger.info("租房Agent服务启动 host=0.0.0.0 port=8191")
+    time_count = 0
+    app.run(host="0.0.0.0", port=8191, debug=False)
