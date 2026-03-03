@@ -18,7 +18,7 @@ LLM_MODEL = os.environ.get("LLM_MODEL", "qwen3-32b")
 # 租房仿真API基地址
 HOUSING_API_BASE = os.environ.get("HOUSING_API_BASE", "http://7.225.29.223:8080")
 # 调用房源API时使用的 X-User-ID
-HOUSING_USER_ID = os.environ.get("HOUSING_USER_ID", "z00899060")
+HOUSING_USER_ID = os.environ.get("HOUSING_USER_ID", "l00889076")
 
 # ======================== 对话存储配置 ========================
 # 对话历史存储目录
